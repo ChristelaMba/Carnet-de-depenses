@@ -1,25 +1,31 @@
 ﻿using Microsoft.Extensions.Logging;
+using CarnetDepenses.Services;
+using CarnetDepenses.ViewModels;
 
-namespace CarnetDepenses
+namespace CarnetDepenses;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        builder.Services.AddSingleton<IDepenseRepository,
+                                      JsonDepenseRepository>();
+        builder.Services.AddSingleton<DepensesViewModel>();
+        builder.Services.AddSingleton<MainPage>();
+
+        return builder.Build();
     }
 }
